@@ -1,0 +1,91 @@
+{
+  "scenario": "profit_share_equal_10",
+  "behavior_case": "no_effect",
+  "environment_case": "normal_market",
+  "currency": "RUB",
+  "month": 1,
+  "environment": {
+    "month": 1,
+    "cumulative_market_trend": 1,
+    "market_factor": 1,
+    "cost_inflation_factor": 1,
+    "labor_market_factor": 1,
+    "shock_happened": false,
+    "shock_revenue_multiplier": 0.8,
+    "shock_cost": 0,
+    "collection_rate_multiplier": 1
+  },
+  "workforce": {
+    "employees_count": 50,
+    "turnover_rate_annual": 0.2,
+    "turnover_rate_monthly": 0.018423470126248342,
+    "leavers_count": 0.9211735063124171,
+    "turnover_productivity_loss": 0,
+    "productivity_uplift": 0,
+    "productivity_level": 1,
+    "high_performer_attrition_warning": false
+  },
+  "pnl": {
+    "revenue": 11500000,
+    "salary_costs": 5000000,
+    "fixed_costs": 2000000,
+    "variable_costs": 2875000,
+    "turnover_cost": 115146.68828905214,
+    "shock_cost": 0,
+    "total_costs_before_bonus": 9990146.688289052,
+    "operating_profit_before_bonus": 1509853.3117109481,
+    "bonus_expense_accrual": 150985.33117109482,
+    "bonus_payroll_tax_accrual": 0,
+    "profit_after_bonus_before_tax": 1358867.9805398532,
+    "profit_tax_accrual": 271773.59610797063,
+    "accounting_profit_after_bonus": 1087094.3844318825
+  },
+  "cash": {
+    "opening_cash_total": 15000000,
+    "cash_collected_current": 9775000,
+    "cash_collected_from_ar": 1725000,
+    "cash_collected_from_revenue": 11500000,
+    "accounts_receivable": {
+      "opening": 1725000,
+      "collected": 1725000,
+      "new": 1725000.0000000002,
+      "closing": 1725000.0000000002,
+      "collection_lag_months": 1
+    },
+    "due_cash_payments": 9990146.688289052,
+    "taxes_paid_cash": 0,
+    "closing_cash_total": 16509853.311710948,
+    "restricted_bonus_cash": 150985.33117109482,
+    "closing_unrestricted_cash": 16358867.980539853,
+    "required_cash_reserve": 14000000,
+    "owner_distributable_cash": 2358867.9805398528,
+    "tax_payable_closing": 271773.59610797063
+  },
+  "compensation": {
+    "bonus_period": "monthly",
+    "is_bonus_period_end": true,
+    "months_in_bonus_period": 1,
+    "period_profit_base_accumulator": 1509853.3117109481,
+    "period_profit_base": 1509853.3117109481,
+    "cash_base_for_total_employer_bonus_cost": 2056897.3181976634,
+    "distributable_base": 1509853.3117109481,
+    "gross_bonus_pool_accrued": 150985.33117109482,
+    "bonus_payroll_tax_accrued": 0,
+    "total_bonus_employer_cost_accrued": 150985.33117109482,
+    "bonus_per_employee_accrued": 3019.7066234218964,
+    "opening_bonus_payable_gross": 0,
+    "opening_bonus_payable_payroll_tax": 0,
+    "opening_bonus_payable": 0,
+    "bonus_paid_cash": 0,
+    "bonus_payroll_tax_paid": 0,
+    "closing_bonus_payable_gross": 150985.33117109482,
+    "closing_bonus_payable_payroll_tax": 0,
+    "closing_bonus_payable": 150985.33117109482
+  },
+  "risks": {
+    "reserve_breach": false,
+    "liquidity_gap": false,
+    "cash_gap": false,
+    "bankruptcy": false
+  }
+}

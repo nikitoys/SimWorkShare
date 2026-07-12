@@ -1,0 +1,7 @@
+{
+  "base_config": "../doc/default_config_v0_3_implementation_ready.json",
+  "scenario": "profit_share_equal_10",
+  "behavior_case": "no_effect",
+  "environment_case": "normal_market",
+  "calibration_status": "template_defaults_not_real_data"
+}

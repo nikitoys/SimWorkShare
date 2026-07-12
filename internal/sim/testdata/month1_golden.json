@@ -1,0 +1,70 @@
+{
+  "scenario": "fixed_only",
+  "behavior_case": "no_effect",
+  "environment_case": "normal_market",
+  "currency": "RUB",
+  "month": 1,
+  "environment": {
+    "month": 1,
+    "cumulative_market_trend": 1,
+    "market_factor": 1,
+    "cost_inflation_factor": 1,
+    "labor_market_factor": 1,
+    "shock_happened": false,
+    "shock_revenue_multiplier": 0.8,
+    "shock_cost": 0,
+    "collection_rate_multiplier": 1
+  },
+  "workforce": {
+    "employees_count": 50,
+    "turnover_rate_annual": 0.2,
+    "turnover_rate_monthly": 0.018423470126248342,
+    "leavers_count": 0.9211735063124171,
+    "turnover_productivity_loss": 0,
+    "productivity_uplift": 0,
+    "productivity_level": 1,
+    "high_performer_attrition_warning": false
+  },
+  "pnl": {
+    "revenue": 11500000,
+    "salary_costs": 5000000,
+    "fixed_costs": 2000000,
+    "variable_costs": 2875000,
+    "turnover_cost": 115146.68828905214,
+    "shock_cost": 0,
+    "total_costs_before_bonus": 9990146.688289052,
+    "operating_profit_before_bonus": 1509853.3117109481,
+    "bonus_expense_accrual": 0,
+    "bonus_payroll_tax_accrual": 0,
+    "profit_after_bonus_before_tax": 1509853.3117109481,
+    "profit_tax_accrual": 301970.66234218964,
+    "accounting_profit_after_bonus": 1207882.6493687585
+  },
+  "cash": {
+    "opening_cash_total": 15000000,
+    "cash_collected_current": 9775000,
+    "cash_collected_from_ar": 1725000,
+    "cash_collected_from_revenue": 11500000,
+    "accounts_receivable": {
+      "opening": 1725000,
+      "collected": 1725000,
+      "new": 1725000.0000000002,
+      "closing": 1725000.0000000002,
+      "collection_lag_months": 1
+    },
+    "due_cash_payments": 9990146.688289052,
+    "taxes_paid_cash": 0,
+    "closing_cash_total": 16509853.311710948,
+    "restricted_bonus_cash": 0,
+    "closing_unrestricted_cash": 16509853.311710948,
+    "required_cash_reserve": 14000000,
+    "owner_distributable_cash": 2509853.311710948,
+    "tax_payable_closing": 301970.66234218964
+  },
+  "risks": {
+    "reserve_breach": false,
+    "liquidity_gap": false,
+    "cash_gap": false,
+    "bankruptcy": false
+  }
+}
