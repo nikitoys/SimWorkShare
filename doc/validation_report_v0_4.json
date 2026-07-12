@@ -1,0 +1,18 @@
+{
+  "schema_version": "0.4",
+  "config_file": "default_config_v0_4.json",
+  "strict_validation": "passed",
+  "errors": [],
+  "warnings": [],
+  "checked_rules": [
+    "json_schema",
+    "horizons<=months",
+    "unique_scenario_names",
+    "allocation_sum<=1",
+    "known_behavior_refs",
+    "deterministic_runs",
+    "turnover_double_count_warning",
+    "cooperative_governance_warning",
+    "member_redemption_warning"
+  ]
+}

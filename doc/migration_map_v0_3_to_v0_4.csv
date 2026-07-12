@@ -1,0 +1,18 @@
+v0_3_entity,v0_4_entity,action,notes
+compensation_scenarios,organizational_scenarios,rename_and_expand,Компенсационные сценарии становятся организационными системами с независимыми осями ownership/profit/governance/reinvestment.
+profit_share_percent,employee_cash_distribution_rate,rename,"Доля положительного результата, выплачиваемая сотрудникам cash."
+bonus_period,profit_distribution_period_months,rename,Период начисления employee distribution.
+bonus_payout_lag_months,employee_distribution_payout_lag_months,rename,Лаг выплаты распределенного результата.
+bonus_payroll_tax_rate,distribution_payroll_tax_rate,rename,Налоги/взносы на employee distribution.
+bonus_payable_queue,employee_distribution_payable_queue,rename,Очередь обязательств по выплатам сотрудникам.
+restricted_bonus_cash,restricted_distribution_cash,rename,Зарезервированный cash под начисленные выплаты.
+employees_count,initial_headcount + dynamic headcount,replace,"v0.4 моделирует hires, leavers, layoffs и ramp-up."
+base_revenue_per_employee,base_revenue_per_effective_employee_monthly,rename,Выручка на effective employee.
+planned_reinvestment_rate,reinvestment_rate,replace_semantics,"В v0.4 это cash outflow на capacity growth, а не только reserve constraint."
+owner_distributable_cash,legacy_only,deprecate,Не является целевой метрикой v0.4.
+fixed_only,traditional_company,rename,Сценарий традиционной компании.
+profit_share_equal_10,profit_sharing,preserve,Сохраняется как comparator без ownership и governance.
+revenue_productivity_elasticity,capacity + labor + demand constraints,replace,"В v0.4 productivity ограничивается labor, market demand и productive capacity."
+demand_cap_multiplier,productive_capacity_revenue_monthly,replace,Явное состояние производственной мощности.
+available_credit_line,base_credit_line,rename_expand,Теперь умножается на external_capital_access_multiplier и credit_market_factor.
+fixed_raise_same_expected_cost,compatibility_v0_3 only,deprioritize,Оставлен только для воспроизводимости v0.3 и дополнительных сравнений.

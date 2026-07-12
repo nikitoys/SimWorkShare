@@ -1,0 +1,12 @@
+assumption,recommended_default,why_needed,effect_on_results
+dynamic_headcount,enabled,Нужен итоговый размер компании,"Меняет revenue, costs, hiring costs"
+ramp_up_hires,"3 months; [0.5,0.75,0.9]",Новые сотрудники не сразу продуктивны,Retention становится ценнее
+productive_capacity,13.8M RUB/month start,Нужно моделировать развитие,Reinvestment получает измеримый эффект
+capacity_creation_efficiency,0.08 monthly revenue capacity per RUB,Связывает investment и growth,"Чем выше, тем выгоднее reinvestment"
+governance_hours,scenario-specific,Участие в управлении имеет opportunity cost,Снижает effective employees
+decision_quality,neutral unless parameters nonzero,Нельзя считать участие автоматически лучше,Влияет на shock response/investment
+member_capital_accounts,coop default 5%,Моделирует employee savings tied to company,Повышает retention/risk depending behavior
+external_capital_multiplier,coop default 0.5,Возможны ограничения капитала,Может замедлить growth
+employment_stabilization,coop default 0.8,Может защищать занятость,"Снижает layoffs, повышает cash risk"
+risk_concentration_index,weighted index,Нужно измерять риск сотрудников,Может повышать turnover
+sustainable_development_value_proxy,cash+replacement capacity-debt-obligations,Company-centered metric,Не является equity value

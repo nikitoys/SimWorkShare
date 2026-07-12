@@ -1,0 +1,150 @@
+section,name,type,unit,range,default,meaning
+simulation,schema_version,string,version,0.4,0.4,Версия схемы конфигурации.
+simulation,mode,enum,mode,deterministic|monte_carlo,monte_carlo,Режим расчета.
+simulation,months,integer,months,1..240,240,Горизонт моделирования.
+simulation,horizons_months,array[int],months,1..months,"[60,120,240]",Горизонты отчета 5/10/20 лет.
+simulation,runs,integer,runs,1..1000000,1000,Количество Monte Carlo прогонов.
+simulation,random_seed,integer,seed,0..2^63-1,42,Воспроизводимость.
+simulation,common_random_numbers,bool,bool,true|false,True,Одинаковая внешняя траектория для сценариев.
+simulation,currency,string,currency,text,RUB,Валюта денежных параметров.
+simulation,epsilon,number,currency/share,0..1e-3,1e-9,Числовая погрешность.
+simulation,headcount_mode,enum,mode,fractional|integer_expected|integer_random,fractional,Режим дискретности headcount.
+simulation,stop_after_bankruptcy,bool,bool,true|false,True,Банкротство как поглощающее событие.
+company_economics,initial_headcount,number/integer,people,>0,50,Начальная численность.
+company_economics,base_salary_per_employee_monthly,number/integer,currency/month/person,>=0,100000,Фиксированная зарплата.
+company_economics,salary_payroll_tax_rate,number/integer,share,0..1,0.0,Взносы/налоги работодателя на зарплату.
+company_economics,standard_hours_per_employee_month,number/integer,hours/person/month,1..300,160,Норма часов.
+company_economics,base_revenue_per_effective_employee_monthly,number/integer,currency/month/effective person,>=0,230000,Базовая выработка full-productivity employee.
+company_economics,initial_market_demand_monthly,number/integer,currency/month,>=0,11500000,Начальный внешний спрос.
+company_economics,initial_productive_capacity_revenue_monthly,number/integer,currency/month,>=0,13800000,Начальная производственная мощность.
+company_economics,fixed_costs_monthly,number/integer,currency/month,>=0,2000000,Постоянные расходы кроме payroll.
+company_economics,variable_cost_rate,number/integer,share of revenue,0..1,0.25,Переменные расходы.
+company_economics,profit_tax_rate,number/integer,share,0..1,0.2,Упрощенный налог на прибыль.
+company_economics,profit_tax_payment_lag_months,number/integer,months,0..24,1,Лаг оплаты налога.
+company_economics,cost_inflation_monthly,number/integer,monthly rate,-0.05..0.10,0.005,Инфляция зарплат и fixed costs.
+company_economics,capacity_depreciation_rate_monthly,number/integer,share/month,0..0.10,0.002,Устаревание производственных возможностей.
+company_economics,capacity_revenue_created_per_currency_invested,number/integer,currency monthly capacity / currency invested,>=0,0.08,Эффективность инвестиций в capacity.
+company_economics,investment_activation_lag_months,number/integer,months,0..60,3,Лаг ввода capacity.
+company_economics,required_cash_reserve_months,number/integer,months,0..24,2.0,Резерв обязательных платежей.
+company_economics,starting_cash,number/integer,currency,>=0,15000000,Денежный запас на старт.
+company_economics,opening_accounts_receivable,number/integer,currency,>=0,1725000,Дебиторка на старт.
+market,market_process,number/enum/array,process,deterministic|bounded_lognormal,bounded_lognormal,Процесс спроса.
+market,market_growth_monthly,number/enum/array,monthly rate,-0.10..0.10,0.003,Средний рост спроса.
+market,market_volatility_monthly,number/enum/array,std dev,0..1,0.08,Волатильность спроса.
+market,market_factor_min,number/enum/array,multiplier,0..10,0.5,Нижняя граница market factor.
+market,market_factor_max,number/enum/array,multiplier,0..10,1.8,Верхняя граница market factor.
+market,seasonality_multipliers,number/enum/array,multiplier,"12 values, 0..10",[1 x 12],Сезонность спроса.
+market,revenue_collection_rate_current_month,number/enum/array,share,0..1,0.85,"Доля выручки, собранная cash в месяце."
+market,accounts_receivable_lag_months,number/enum/array,months,0..24,1,Лаг сбора AR.
+market,bad_debt_rate,number/enum/array,share,0..1,0.0,Безнадежная дебиторка.
+market,shock_probability_monthly,number/enum/array,probability,0..1,0.03,Вероятность рыночного шока.
+market,shock_revenue_multiplier,number/enum/array,multiplier,0..1,0.8,Базовый множитель выручки при шоке.
+market,shock_cost_mean,number/enum/array,currency,>=0,0,Средний cost шока.
+market,shock_cost_std,number/enum/array,currency,>=0,0,Стандартное отклонение shock cost.
+market,cash_collection_stress_multiplier,number/enum/array,multiplier,0..1,0.9,Снижение collection rate при шоке.
+market,labor_market_factor,number/enum/array,multiplier,0..5,1.0,Множитель текучести.
+market,credit_market_factor,number/enum/array,multiplier,0..5,1.0,Доступность внешнего капитала.
+workforce,base_turnover_rate_annual,number/enum/array,annual share,0..1,0.2,Базовая годовая текучесть.
+workforce,min_turnover_rate_annual,number/enum/array,annual share,0..1,0.03,Нижняя граница.
+workforce,max_turnover_rate_annual,number/enum/array,annual share,0..1,0.6,Верхняя граница.
+workforce,turnover_random_mode,number/enum/array,mode,deterministic|binomial,deterministic,Стохастика увольнений.
+workforce,high_performer_share,number/enum/array,share,0..1,0.2,Доля сильных сотрудников для risk indicator.
+workforce,recruiting_cost_per_hire,number/enum/array,currency/hire,>=0,50000,Стоимость найма.
+workforce,onboarding_cost_per_hire,number/enum/array,currency/hire,>=0,50000,Адаптация/обучение.
+workforce,manager_time_cost_per_hire,number/enum/array,currency/hire,>=0,25000,Время менеджмента.
+workforce,exit_admin_cost_per_leaver,number/enum/array,currency/leaver,>=0,10000,Админ. стоимость ухода.
+workforce,lost_productivity_cost_per_leaver,number/enum/array,currency/leaver,>=0,0,Явная стоимость потерь; default 0 чтобы не double count.
+workforce,severance_cost_per_layoff,number/enum/array,currency/layoff,>=0,100000,Стоимость сокращения.
+workforce,ramp_duration_months,number/enum/array,months,0..24,3,Период выхода на продуктивность.
+workforce,ramp_productivity_multipliers,number/enum/array,multiplier,0..1,"[0.5,0.75,0.9]",Продуктивность новых сотрудников.
+workforce,max_hires_per_month_rate,number/enum/array,share of headcount,0..1,0.1,Ограничение найма.
+workforce,max_layoffs_per_month_rate,number/enum/array,share of headcount,0..1,0.1,Ограничение сокращений.
+workforce,layoff_trigger_cash_ratio,number/enum/array,ratio,0..10,0.5,Порог cash stress.
+workforce,leaver_paid_fraction_of_month,number/enum/array,share,0..1,0.5,"Доля месяца, оплаченная уходящим."
+workforce,new_hire_paid_fraction_of_month,number/enum/array,share,0..1,0.5,"Доля месяца, оплаченная новым."
+workforce,min_productivity_uplift,number/enum/array,uplift,-1..1,-0.15,Нижняя граница uplift.
+workforce,max_productivity_uplift,number/enum/array,uplift,-1..1,0.2,Верхняя граница uplift.
+workforce,turnover_productivity_penalty_per_annual_turnover,number/enum/array,uplift loss,0..10,0.1,Потеря productivity от excess turnover.
+workforce,target_staffing_buffer,number/enum/array,multiplier,0..3,1.05,Запас headcount под спрос.
+workforce,max_cash_share_for_hiring,number/enum/array,share,0..1,0.25,Доля excess cash на hiring.
+financing,base_credit_line,number/enum,currency,>=0,0,Доступная кредитная линия.
+financing,debt_interest_rate_annual,number/enum,annual rate,0..1,0.18,Стоимость долга.
+financing,scheduled_principal_payment_monthly,number/enum,currency/month,>=0,0,Плановое погашение principal.
+financing,external_growth_capital_limit_monthly,number/enum,currency/month,>=0,0,Максимальный внешний капитал на развитие.
+financing,external_capital_type,number/enum,type,debt|non_dilutive_grant,debt,Тип внешнего growth capital.
+financing,distribution_payroll_tax_rate,number/enum,share,0..1,0.0,Налоги/взносы на employee distribution.
+financing,distribution_tax_deductible_share,number/enum,share,0..1,1.0,"Доля distribution, уменьшающая taxable profit."
+financing,employee_distribution_payout_lag_months,number/enum,months,0..24,1,Лаг выплаты employee distribution.
+financing,member_capital_redemption_lag_months,number/enum,months,0..120,24,Лаг выплаты member capital при уходе.
+financing,member_capital_redemption_fraction_on_exit,number/enum,share,0..1,1.0,Доля member capital к redemption.
+financing,reserve_release_rate_on_stress,number/enum,share/month,0..1,0.5,Release restricted reserve under stress.
+employee_risk,employee_external_savings_proxy_per_employee,number,currency/person,>=0,600000,Proxy внешних накоплений сотрудника.
+employee_risk,employment_dependence_index,number,index,0..1,1.0,Зависимость занятости от компании.
+employee_risk,risk_weight_variable_income,number,weight,0..1,0.4,Вес переменного дохода.
+employee_risk,risk_weight_member_capital,number,weight,0..1,0.4,Вес member capital.
+employee_risk,risk_weight_employment_dependence,number,weight,0..1,0.2,Вес зависимости занятости.
+organizational_scenarios,name,number/string/enum/array/null,id,unique snake_case,required,Имя сценария.
+organizational_scenarios,system_type,number/string/enum/array/null,type,traditional_company|profit_sharing|employee_ownership_partial|worker_cooperative,required,Тип системы.
+organizational_scenarios,employee_ownership_fraction,number/string/enum/array/null,share,0..1,scenario-specific,Экономическое участие сотрудников.
+organizational_scenarios,employee_cash_distribution_rate,number/string/enum/array/null,share,0..1,scenario-specific,Cash distribution сотрудникам.
+organizational_scenarios,member_capital_allocation_rate,number/string/enum/array/null,share,0..1,scenario-specific,Начисление на внутренние счета.
+organizational_scenarios,reinvestment_rate,number/string/enum/array/null,share,0..1,scenario-specific,Доля результата на развитие.
+organizational_scenarios,organizational_reserve_rate,number/string/enum/array/null,share,0..1,scenario-specific,Резерв устойчивости.
+organizational_scenarios,external_distribution_rate,number/string/enum/array/null,share,0..1,0,Cash outflow вне компании; не target metric.
+organizational_scenarios,result_hurdle_monthly,number/string/enum/array/null,currency/month,>=0,0,"Результат, не подлежащий распределению."
+organizational_scenarios,allocation_priority,number/string/enum/array/null,order,valid allocation ids,required,Очередь распределения результата.
+organizational_scenarios,distribution_rule,number/string/enum/array/null,rule,none|equal_per_capita|contribution_weighted|hybrid,scenario-specific,Правило распределения.
+organizational_scenarios,contribution_measurement_quality,number/string/enum/array/null,index,0..1,scenario-specific,Качество измерения индивидуального вклада.
+organizational_scenarios,peer_monitoring_effectiveness,number/string/enum/array/null,index,0..1,scenario-specific,Снижение free-rider через peer monitoring.
+organizational_scenarios,transparency_index,number/string/enum/array/null,index,0..1,scenario-specific,Прозрачность формулы и финансов.
+organizational_scenarios,employment_stabilization_preference,number/string/enum/array/null,index,0..1,scenario-specific,Склонность избегать layoffs.
+organizational_scenarios,external_capital_access_multiplier,number/string/enum/array/null,multiplier,0..5,scenario-specific,Ограничение/преимущество внешнего капитала.
+organizational_scenarios,profit_distribution_period_months,number/string/enum/array/null,months,1..12,1,Период начисления distribution.
+organizational_scenarios,max_distribution_per_employee_period,number/string/enum/array/null,currency/person/period,>=0|null,None,Cap выплаты.
+organizational_scenarios,behavior_case_refs,number/string/enum/array/null,ids,non-empty,required,Какие behavior cases прогонять.
+governance,governance_participation_intensity,number,varies,see spec,0.8,"Параметр модели управления; влияет на hours, cost, delay, quality, shock response или investment efficiency."
+governance,base_governance_hours_per_employee_month,number,varies,see spec,4.0,"Параметр модели управления; влияет на hours, cost, delay, quality, shock response или investment efficiency."
+governance,fixed_governance_hours_monthly,number,varies,see spec,40.0,"Параметр модели управления; влияет на hours, cost, delay, quality, shock response или investment efficiency."
+governance,governance_cash_cost_fixed_monthly,number,varies,see spec,100000,"Параметр модели управления; влияет на hours, cost, delay, quality, shock response или investment efficiency."
+governance,governance_cash_cost_per_employee_monthly,number,varies,see spec,2000,"Параметр модели управления; влияет на hours, cost, delay, quality, shock response или investment efficiency."
+governance,decision_complexity_index,number,varies,see spec,1.2,"Параметр модели управления; влияет на hours, cost, delay, quality, shock response или investment efficiency."
+governance,base_decision_delay_months,number,varies,see spec,0.25,"Параметр модели управления; влияет на hours, cost, delay, quality, shock response или investment efficiency."
+governance,delay_per_participation_months,number,varies,see spec,0.5,"Параметр модели управления; влияет на hours, cost, delay, quality, shock response или investment efficiency."
+governance,local_autonomy_index,number,varies,see spec,0.6,"Параметр модели управления; влияет на hours, cost, delay, quality, shock response или investment efficiency."
+governance,decentralization_speed_gain_months,number,varies,see spec,0.2,"Параметр модели управления; влияет на hours, cost, delay, quality, shock response или investment efficiency."
+governance,governance_capability_index,number,varies,see spec,1.0,"Параметр модели управления; влияет на hours, cost, delay, quality, shock response или investment efficiency."
+governance,information_sharing_quality,number,varies,see spec,0.8,"Параметр модели управления; влияет на hours, cost, delay, quality, shock response или investment efficiency."
+governance,trust_index,number,varies,see spec,0.7,"Параметр модели управления; влияет на hours, cost, delay, quality, shock response или investment efficiency."
+governance,quality_gain_from_participation,number,varies,see spec,0.03,"Параметр модели управления; влияет на hours, cost, delay, quality, shock response или investment efficiency."
+governance,coordination_loss_from_participation,number,varies,see spec,0.02,"Параметр модели управления; влияет на hours, cost, delay, quality, shock response или investment efficiency."
+governance,conflict_loss_sensitivity,number,varies,see spec,0.02,"Параметр модели управления; влияет на hours, cost, delay, quality, shock response или investment efficiency."
+governance,decision_delay_quality_loss,number,varies,see spec,0.01,"Параметр модели управления; влияет на hours, cost, delay, quality, shock response или investment efficiency."
+governance,decision_quality_min,number,varies,see spec,0.7,"Параметр модели управления; влияет на hours, cost, delay, quality, shock response или investment efficiency."
+governance,decision_quality_max,number,varies,see spec,1.2,"Параметр модели управления; влияет на hours, cost, delay, quality, shock response или investment efficiency."
+governance,shock_mitigation_sensitivity,number,varies,see spec,0.15,"Параметр модели управления; влияет на hours, cost, delay, quality, shock response или investment efficiency."
+governance,shock_delay_amplification,number,varies,see spec,0.03,"Параметр модели управления; влияет на hours, cost, delay, quality, shock response или investment efficiency."
+governance,investment_efficiency_sensitivity,number,varies,see spec,0.15,"Параметр модели управления; влияет на hours, cost, delay, quality, shock response или investment efficiency."
+behavior_cases,base_productivity_uplift_direct,number,varies,see spec,0.0,Сценарное допущение поведения; в no_effect равно нейтральному значению.
+behavior_cases,ownership_productivity_sensitivity,number,varies,see spec,0.0,Сценарное допущение поведения; в no_effect равно нейтральному значению.
+behavior_cases,profit_distribution_productivity_sensitivity,number,varies,see spec,0.0,Сценарное допущение поведения; в no_effect равно нейтральному значению.
+behavior_cases,governance_voice_productivity_sensitivity,number,varies,see spec,0.0,Сценарное допущение поведения; в no_effect равно нейтральному значению.
+behavior_cases,base_turnover_delta_annual_pp,number,varies,see spec,0.0,Сценарное допущение поведения; в no_effect равно нейтральному значению.
+behavior_cases,ownership_retention_delta_annual_pp_per_full_ownership,number,varies,see spec,0.0,Сценарное допущение поведения; в no_effect равно нейтральному значению.
+behavior_cases,profit_distribution_retention_delta_annual_pp_per_10pp,number,varies,see spec,0.0,Сценарное допущение поведения; в no_effect равно нейтральному значению.
+behavior_cases,governance_retention_delta_annual_pp_per_full_participation,number,varies,see spec,0.0,Сценарное допущение поведения; в no_effect равно нейтральному значению.
+behavior_cases,fairness_base,number,varies,see spec,0.0,Сценарное допущение поведения; в no_effect равно нейтральному значению.
+behavior_cases,transparency_to_fairness,number,varies,see spec,0.0,Сценарное допущение поведения; в no_effect равно нейтральному значению.
+behavior_cases,equal_distribution_fairness_effect,number,varies,see spec,0.0,Сценарное допущение поведения; в no_effect равно нейтральному значению.
+behavior_cases,contribution_based_distribution_fairness_effect,number,varies,see spec,0.0,Сценарное допущение поведения; в no_effect равно нейтральному значению.
+behavior_cases,pay_dispersion_fairness_penalty,number,varies,see spec,0.0,Сценарное допущение поведения; в no_effect равно нейтральному значению.
+behavior_cases,unpaid_governance_burden_penalty,number,varies,see spec,0.0,Сценарное допущение поведения; в no_effect равно нейтральному значению.
+behavior_cases,zero_distribution_fairness_penalty,number,varies,see spec,0.0,Сценарное допущение поведения; в no_effect равно нейтральному значению.
+behavior_cases,fairness_productivity_sensitivity,number,varies,see spec,0.0,Сценарное допущение поведения; в no_effect равно нейтральному значению.
+behavior_cases,fairness_turnover_sensitivity_annual_pp,number,varies,see spec,0.0,Сценарное допущение поведения; в no_effect равно нейтральному значению.
+behavior_cases,free_rider_base_penalty,number,varies,see spec,0.0,Сценарное допущение поведения; в no_effect равно нейтральному значению.
+behavior_cases,free_rider_size_exponent,number,varies,see spec,0.5,Сценарное допущение поведения; в no_effect равно нейтральному значению.
+behavior_cases,free_rider_reference_headcount,number,varies,see spec,50,Сценарное допущение поведения; в no_effect равно нейтральному значению.
+behavior_cases,free_rider_max_size_multiplier,number,varies,see spec,3.0,Сценарное допущение поведения; в no_effect равно нейтральному значению.
+behavior_cases,risk_concentration_turnover_sensitivity_annual_pp,number,varies,see spec,0.0,Сценарное допущение поведения; в no_effect равно нейтральному значению.
+behavior_cases,income_volatility_turnover_sensitivity_annual_pp,number,varies,see spec,0.0,Сценарное допущение поведения; в no_effect равно нейтральному значению.
+behavior_cases,high_performer_attrition_delta_pp,number,varies,see spec,0.0,Сценарное допущение поведения; в no_effect равно нейтральному значению.

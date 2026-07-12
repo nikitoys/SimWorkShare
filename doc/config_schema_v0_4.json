@@ -1,0 +1,1239 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://simworkshare.local/schema/v0.4/config.schema.json",
+  "title": "SimWorkShare v0.4 configuration schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "config_validation",
+    "simulation",
+    "units",
+    "company_economics",
+    "market",
+    "workforce",
+    "employee_risk",
+    "financing",
+    "behavior_cases",
+    "organizational_scenarios",
+    "analysis",
+    "reporting",
+    "compatibility_v0_3"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "0.4"
+    },
+    "config_validation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "reject_unknown_fields",
+        "reject_duplicate_fields",
+        "allow_name_normalization",
+        "reject_nan_and_infinity"
+      ],
+      "properties": {
+        "reject_unknown_fields": {
+          "type": "boolean"
+        },
+        "reject_duplicate_fields": {
+          "type": "boolean"
+        },
+        "allow_name_normalization": {
+          "type": "boolean"
+        },
+        "reject_nan_and_infinity": {
+          "type": "boolean"
+        }
+      }
+    },
+    "simulation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "mode",
+        "months",
+        "horizons_months",
+        "runs",
+        "random_seed",
+        "common_random_numbers",
+        "currency",
+        "epsilon",
+        "headcount_mode",
+        "stop_after_bankruptcy"
+      ],
+      "properties": {
+        "mode": {
+          "enum": [
+            "deterministic",
+            "monte_carlo"
+          ]
+        },
+        "months": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 240
+        },
+        "horizons_months": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 240
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "runs": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 1000000
+        },
+        "random_seed": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "common_random_numbers": {
+          "type": "boolean"
+        },
+        "currency": {
+          "type": "string",
+          "minLength": 1
+        },
+        "epsilon": {
+          "type": "number",
+          "minimum": 0
+        },
+        "headcount_mode": {
+          "enum": [
+            "fractional",
+            "integer_expected",
+            "integer_random"
+          ]
+        },
+        "stop_after_bankruptcy": {
+          "type": "boolean"
+        }
+      }
+    },
+    "units": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "company_economics": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "initial_headcount",
+        "base_salary_per_employee_monthly",
+        "salary_payroll_tax_rate",
+        "standard_hours_per_employee_month",
+        "base_revenue_per_effective_employee_monthly",
+        "initial_market_demand_monthly",
+        "initial_productive_capacity_revenue_monthly",
+        "fixed_costs_monthly",
+        "variable_cost_rate",
+        "profit_tax_rate",
+        "profit_tax_payment_lag_months",
+        "cost_inflation_monthly",
+        "capacity_depreciation_rate_monthly",
+        "capacity_revenue_created_per_currency_invested",
+        "investment_activation_lag_months",
+        "required_cash_reserve_months",
+        "starting_cash",
+        "opening_accounts_receivable"
+      ],
+      "properties": {
+        "initial_headcount": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "base_salary_per_employee_monthly": {
+          "type": "number",
+          "minimum": 0
+        },
+        "salary_payroll_tax_rate": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "standard_hours_per_employee_month": {
+          "type": "number",
+          "minimum": 1,
+          "maximum": 300
+        },
+        "base_revenue_per_effective_employee_monthly": {
+          "type": "number",
+          "minimum": 0
+        },
+        "initial_market_demand_monthly": {
+          "type": "number",
+          "minimum": 0
+        },
+        "initial_productive_capacity_revenue_monthly": {
+          "type": "number",
+          "minimum": 0
+        },
+        "fixed_costs_monthly": {
+          "type": "number",
+          "minimum": 0
+        },
+        "variable_cost_rate": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "profit_tax_rate": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "profit_tax_payment_lag_months": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 24
+        },
+        "cost_inflation_monthly": {
+          "type": "number",
+          "minimum": -0.05,
+          "maximum": 0.1
+        },
+        "capacity_depreciation_rate_monthly": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 0.1
+        },
+        "capacity_revenue_created_per_currency_invested": {
+          "type": "number",
+          "minimum": 0
+        },
+        "investment_activation_lag_months": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 60
+        },
+        "required_cash_reserve_months": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 24
+        },
+        "starting_cash": {
+          "type": "number",
+          "minimum": 0
+        },
+        "opening_accounts_receivable": {
+          "type": "number",
+          "minimum": 0
+        }
+      }
+    },
+    "market": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "market_process",
+        "market_growth_monthly",
+        "market_volatility_monthly",
+        "market_factor_min",
+        "market_factor_max",
+        "seasonality_multipliers",
+        "revenue_collection_rate_current_month",
+        "accounts_receivable_lag_months",
+        "bad_debt_rate",
+        "shock_probability_monthly",
+        "shock_revenue_multiplier",
+        "shock_cost_mean",
+        "shock_cost_std",
+        "cash_collection_stress_multiplier",
+        "labor_market_factor",
+        "credit_market_factor"
+      ],
+      "properties": {
+        "market_process": {
+          "enum": [
+            "deterministic",
+            "bounded_lognormal"
+          ]
+        },
+        "market_growth_monthly": {
+          "type": "number",
+          "minimum": -0.1,
+          "maximum": 0.1
+        },
+        "market_volatility_monthly": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "market_factor_min": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 10
+        },
+        "market_factor_max": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 10
+        },
+        "seasonality_multipliers": {
+          "type": "array",
+          "minItems": 12,
+          "maxItems": 12,
+          "items": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 10
+          }
+        },
+        "revenue_collection_rate_current_month": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "accounts_receivable_lag_months": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 24
+        },
+        "bad_debt_rate": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "shock_probability_monthly": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "shock_revenue_multiplier": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "shock_cost_mean": {
+          "type": "number",
+          "minimum": 0
+        },
+        "shock_cost_std": {
+          "type": "number",
+          "minimum": 0
+        },
+        "cash_collection_stress_multiplier": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "labor_market_factor": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 5
+        },
+        "credit_market_factor": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 5
+        }
+      }
+    },
+    "workforce": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "base_turnover_rate_annual",
+        "min_turnover_rate_annual",
+        "max_turnover_rate_annual",
+        "turnover_random_mode",
+        "high_performer_share",
+        "recruiting_cost_per_hire",
+        "onboarding_cost_per_hire",
+        "manager_time_cost_per_hire",
+        "exit_admin_cost_per_leaver",
+        "lost_productivity_cost_per_leaver",
+        "severance_cost_per_layoff",
+        "ramp_duration_months",
+        "ramp_productivity_multipliers",
+        "max_hires_per_month_rate",
+        "max_layoffs_per_month_rate",
+        "layoff_trigger_cash_ratio",
+        "leaver_paid_fraction_of_month",
+        "new_hire_paid_fraction_of_month",
+        "min_productivity_uplift",
+        "max_productivity_uplift",
+        "turnover_productivity_penalty_per_annual_turnover",
+        "target_staffing_buffer",
+        "max_cash_share_for_hiring"
+      ],
+      "properties": {
+        "base_turnover_rate_annual": {
+          "type": [
+            "number",
+            "integer",
+            "string",
+            "boolean",
+            "array"
+          ]
+        },
+        "min_turnover_rate_annual": {
+          "type": [
+            "number",
+            "integer",
+            "string",
+            "boolean",
+            "array"
+          ]
+        },
+        "max_turnover_rate_annual": {
+          "type": [
+            "number",
+            "integer",
+            "string",
+            "boolean",
+            "array"
+          ]
+        },
+        "turnover_random_mode": {
+          "enum": [
+            "deterministic",
+            "binomial"
+          ]
+        },
+        "high_performer_share": {
+          "type": [
+            "number",
+            "integer",
+            "string",
+            "boolean",
+            "array"
+          ]
+        },
+        "recruiting_cost_per_hire": {
+          "type": [
+            "number",
+            "integer",
+            "string",
+            "boolean",
+            "array"
+          ]
+        },
+        "onboarding_cost_per_hire": {
+          "type": [
+            "number",
+            "integer",
+            "string",
+            "boolean",
+            "array"
+          ]
+        },
+        "manager_time_cost_per_hire": {
+          "type": [
+            "number",
+            "integer",
+            "string",
+            "boolean",
+            "array"
+          ]
+        },
+        "exit_admin_cost_per_leaver": {
+          "type": [
+            "number",
+            "integer",
+            "string",
+            "boolean",
+            "array"
+          ]
+        },
+        "lost_productivity_cost_per_leaver": {
+          "type": [
+            "number",
+            "integer",
+            "string",
+            "boolean",
+            "array"
+          ]
+        },
+        "severance_cost_per_layoff": {
+          "type": [
+            "number",
+            "integer",
+            "string",
+            "boolean",
+            "array"
+          ]
+        },
+        "ramp_duration_months": {
+          "type": [
+            "number",
+            "integer",
+            "string",
+            "boolean",
+            "array"
+          ]
+        },
+        "ramp_productivity_multipliers": {
+          "type": "array",
+          "items": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          }
+        },
+        "max_hires_per_month_rate": {
+          "type": [
+            "number",
+            "integer",
+            "string",
+            "boolean",
+            "array"
+          ]
+        },
+        "max_layoffs_per_month_rate": {
+          "type": [
+            "number",
+            "integer",
+            "string",
+            "boolean",
+            "array"
+          ]
+        },
+        "layoff_trigger_cash_ratio": {
+          "type": [
+            "number",
+            "integer",
+            "string",
+            "boolean",
+            "array"
+          ]
+        },
+        "leaver_paid_fraction_of_month": {
+          "type": [
+            "number",
+            "integer",
+            "string",
+            "boolean",
+            "array"
+          ]
+        },
+        "new_hire_paid_fraction_of_month": {
+          "type": [
+            "number",
+            "integer",
+            "string",
+            "boolean",
+            "array"
+          ]
+        },
+        "min_productivity_uplift": {
+          "type": [
+            "number",
+            "integer",
+            "string",
+            "boolean",
+            "array"
+          ]
+        },
+        "max_productivity_uplift": {
+          "type": [
+            "number",
+            "integer",
+            "string",
+            "boolean",
+            "array"
+          ]
+        },
+        "turnover_productivity_penalty_per_annual_turnover": {
+          "type": [
+            "number",
+            "integer",
+            "string",
+            "boolean",
+            "array"
+          ]
+        },
+        "target_staffing_buffer": {
+          "type": [
+            "number",
+            "integer",
+            "string",
+            "boolean",
+            "array"
+          ]
+        },
+        "max_cash_share_for_hiring": {
+          "type": [
+            "number",
+            "integer",
+            "string",
+            "boolean",
+            "array"
+          ]
+        }
+      }
+    },
+    "employee_risk": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "employee_external_savings_proxy_per_employee",
+        "employment_dependence_index",
+        "risk_weight_variable_income",
+        "risk_weight_member_capital",
+        "risk_weight_employment_dependence"
+      ],
+      "properties": {
+        "employee_external_savings_proxy_per_employee": {
+          "type": [
+            "number",
+            "integer",
+            "string",
+            "boolean",
+            "array"
+          ]
+        },
+        "employment_dependence_index": {
+          "type": [
+            "number",
+            "integer",
+            "string",
+            "boolean",
+            "array"
+          ]
+        },
+        "risk_weight_variable_income": {
+          "type": [
+            "number",
+            "integer",
+            "string",
+            "boolean",
+            "array"
+          ]
+        },
+        "risk_weight_member_capital": {
+          "type": [
+            "number",
+            "integer",
+            "string",
+            "boolean",
+            "array"
+          ]
+        },
+        "risk_weight_employment_dependence": {
+          "type": [
+            "number",
+            "integer",
+            "string",
+            "boolean",
+            "array"
+          ]
+        }
+      }
+    },
+    "financing": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "base_credit_line",
+        "debt_interest_rate_annual",
+        "scheduled_principal_payment_monthly",
+        "external_growth_capital_limit_monthly",
+        "external_capital_type",
+        "distribution_payroll_tax_rate",
+        "distribution_tax_deductible_share",
+        "employee_distribution_payout_lag_months",
+        "member_capital_redemption_lag_months",
+        "member_capital_redemption_fraction_on_exit",
+        "reserve_release_rate_on_stress"
+      ],
+      "properties": {
+        "base_credit_line": {
+          "type": [
+            "number",
+            "integer",
+            "string",
+            "boolean",
+            "array"
+          ]
+        },
+        "debt_interest_rate_annual": {
+          "type": [
+            "number",
+            "integer",
+            "string",
+            "boolean",
+            "array"
+          ]
+        },
+        "scheduled_principal_payment_monthly": {
+          "type": [
+            "number",
+            "integer",
+            "string",
+            "boolean",
+            "array"
+          ]
+        },
+        "external_growth_capital_limit_monthly": {
+          "type": [
+            "number",
+            "integer",
+            "string",
+            "boolean",
+            "array"
+          ]
+        },
+        "external_capital_type": {
+          "enum": [
+            "debt",
+            "non_dilutive_grant"
+          ]
+        },
+        "distribution_payroll_tax_rate": {
+          "type": [
+            "number",
+            "integer",
+            "string",
+            "boolean",
+            "array"
+          ]
+        },
+        "distribution_tax_deductible_share": {
+          "type": [
+            "number",
+            "integer",
+            "string",
+            "boolean",
+            "array"
+          ]
+        },
+        "employee_distribution_payout_lag_months": {
+          "type": [
+            "number",
+            "integer",
+            "string",
+            "boolean",
+            "array"
+          ]
+        },
+        "member_capital_redemption_lag_months": {
+          "type": [
+            "number",
+            "integer",
+            "string",
+            "boolean",
+            "array"
+          ]
+        },
+        "member_capital_redemption_fraction_on_exit": {
+          "type": [
+            "number",
+            "integer",
+            "string",
+            "boolean",
+            "array"
+          ]
+        },
+        "reserve_release_rate_on_stress": {
+          "type": [
+            "number",
+            "integer",
+            "string",
+            "boolean",
+            "array"
+          ]
+        }
+      }
+    },
+    "behavior_cases": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": {
+        "$ref": "#/$defs/behavior_case"
+      }
+    },
+    "organizational_scenarios": {
+      "type": "array",
+      "minItems": 3,
+      "items": {
+        "$ref": "#/$defs/organizational_scenario"
+      }
+    },
+    "analysis": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "paired_reference_scenarios",
+        "volatility_penalty_lambda",
+        "classification_tolerance",
+        "break_even_metric",
+        "break_even_uplift_range",
+        "sensitivity_parameters"
+      ],
+      "properties": {
+        "paired_reference_scenarios": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1
+        },
+        "volatility_penalty_lambda": {
+          "type": "number",
+          "minimum": 0
+        },
+        "classification_tolerance": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "break_even_metric": {
+          "enum": [
+            "sustainable_development_value_proxy",
+            "cash_end_unrestricted",
+            "productive_capacity_growth_rate",
+            "revenue_cagr"
+          ]
+        },
+        "break_even_uplift_range": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 2,
+          "items": {
+            "type": "number"
+          }
+        },
+        "sensitivity_parameters": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "path",
+              "values"
+            ],
+            "properties": {
+              "path": {
+                "type": "string"
+              },
+              "values": {
+                "type": "array",
+                "items": {
+                  "type": "number"
+                },
+                "minItems": 1
+              }
+            }
+          }
+        }
+      }
+    },
+    "reporting": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "print_model_limitations",
+        "print_assumption_flags",
+        "write_monthly_csv",
+        "write_summary_csv",
+        "write_sensitivity_csv",
+        "write_break_even_csv"
+      ],
+      "properties": {
+        "print_model_limitations": {
+          "type": "boolean"
+        },
+        "print_assumption_flags": {
+          "type": "boolean"
+        },
+        "write_monthly_csv": {
+          "type": "boolean"
+        },
+        "write_summary_csv": {
+          "type": "boolean"
+        },
+        "write_sensitivity_csv": {
+          "type": "boolean"
+        },
+        "write_break_even_csv": {
+          "type": "boolean"
+        }
+      }
+    },
+    "compatibility_v0_3": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "enabled",
+        "preserve_v0_3_profit_sharing_scenarios",
+        "legacy_outputs_enabled",
+        "headcount_policy"
+      ],
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "preserve_v0_3_profit_sharing_scenarios": {
+          "type": "boolean"
+        },
+        "legacy_outputs_enabled": {
+          "type": "boolean"
+        },
+        "headcount_policy": {
+          "enum": [
+            "dynamic_v0_4",
+            "fixed_v0_3"
+          ]
+        }
+      }
+    }
+  },
+  "$defs": {
+    "behavior_case": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "base_productivity_uplift_direct",
+        "ownership_productivity_sensitivity",
+        "profit_distribution_productivity_sensitivity",
+        "governance_voice_productivity_sensitivity",
+        "base_turnover_delta_annual_pp",
+        "ownership_retention_delta_annual_pp_per_full_ownership",
+        "profit_distribution_retention_delta_annual_pp_per_10pp",
+        "governance_retention_delta_annual_pp_per_full_participation",
+        "fairness_base",
+        "transparency_to_fairness",
+        "equal_distribution_fairness_effect",
+        "contribution_based_distribution_fairness_effect",
+        "pay_dispersion_fairness_penalty",
+        "unpaid_governance_burden_penalty",
+        "zero_distribution_fairness_penalty",
+        "fairness_productivity_sensitivity",
+        "fairness_turnover_sensitivity_annual_pp",
+        "free_rider_base_penalty",
+        "free_rider_size_exponent",
+        "free_rider_reference_headcount",
+        "free_rider_max_size_multiplier",
+        "risk_concentration_turnover_sensitivity_annual_pp",
+        "income_volatility_turnover_sensitivity_annual_pp",
+        "high_performer_attrition_delta_pp"
+      ],
+      "properties": {
+        "base_productivity_uplift_direct": {
+          "type": "number"
+        },
+        "ownership_productivity_sensitivity": {
+          "type": "number"
+        },
+        "profit_distribution_productivity_sensitivity": {
+          "type": "number"
+        },
+        "governance_voice_productivity_sensitivity": {
+          "type": "number"
+        },
+        "base_turnover_delta_annual_pp": {
+          "type": "number"
+        },
+        "ownership_retention_delta_annual_pp_per_full_ownership": {
+          "type": "number"
+        },
+        "profit_distribution_retention_delta_annual_pp_per_10pp": {
+          "type": "number"
+        },
+        "governance_retention_delta_annual_pp_per_full_participation": {
+          "type": "number"
+        },
+        "fairness_base": {
+          "type": "number"
+        },
+        "transparency_to_fairness": {
+          "type": "number"
+        },
+        "equal_distribution_fairness_effect": {
+          "type": "number"
+        },
+        "contribution_based_distribution_fairness_effect": {
+          "type": "number"
+        },
+        "pay_dispersion_fairness_penalty": {
+          "type": "number"
+        },
+        "unpaid_governance_burden_penalty": {
+          "type": "number"
+        },
+        "zero_distribution_fairness_penalty": {
+          "type": "number"
+        },
+        "fairness_productivity_sensitivity": {
+          "type": "number"
+        },
+        "fairness_turnover_sensitivity_annual_pp": {
+          "type": "number"
+        },
+        "free_rider_base_penalty": {
+          "type": "number"
+        },
+        "free_rider_size_exponent": {
+          "type": "number"
+        },
+        "free_rider_reference_headcount": {
+          "type": "number"
+        },
+        "free_rider_max_size_multiplier": {
+          "type": "number"
+        },
+        "risk_concentration_turnover_sensitivity_annual_pp": {
+          "type": "number"
+        },
+        "income_volatility_turnover_sensitivity_annual_pp": {
+          "type": "number"
+        },
+        "high_performer_attrition_delta_pp": {
+          "type": "number"
+        }
+      }
+    },
+    "governance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "governance_participation_intensity",
+        "base_governance_hours_per_employee_month",
+        "fixed_governance_hours_monthly",
+        "governance_cash_cost_fixed_monthly",
+        "governance_cash_cost_per_employee_monthly",
+        "decision_complexity_index",
+        "base_decision_delay_months",
+        "delay_per_participation_months",
+        "local_autonomy_index",
+        "decentralization_speed_gain_months",
+        "governance_capability_index",
+        "information_sharing_quality",
+        "trust_index",
+        "quality_gain_from_participation",
+        "coordination_loss_from_participation",
+        "conflict_loss_sensitivity",
+        "decision_delay_quality_loss",
+        "decision_quality_min",
+        "decision_quality_max",
+        "shock_mitigation_sensitivity",
+        "shock_delay_amplification",
+        "investment_efficiency_sensitivity"
+      ],
+      "properties": {
+        "governance_participation_intensity": {
+          "type": "number"
+        },
+        "base_governance_hours_per_employee_month": {
+          "type": "number"
+        },
+        "fixed_governance_hours_monthly": {
+          "type": "number"
+        },
+        "governance_cash_cost_fixed_monthly": {
+          "type": "number"
+        },
+        "governance_cash_cost_per_employee_monthly": {
+          "type": "number"
+        },
+        "decision_complexity_index": {
+          "type": "number"
+        },
+        "base_decision_delay_months": {
+          "type": "number"
+        },
+        "delay_per_participation_months": {
+          "type": "number"
+        },
+        "local_autonomy_index": {
+          "type": "number"
+        },
+        "decentralization_speed_gain_months": {
+          "type": "number"
+        },
+        "governance_capability_index": {
+          "type": "number"
+        },
+        "information_sharing_quality": {
+          "type": "number"
+        },
+        "trust_index": {
+          "type": "number"
+        },
+        "quality_gain_from_participation": {
+          "type": "number"
+        },
+        "coordination_loss_from_participation": {
+          "type": "number"
+        },
+        "conflict_loss_sensitivity": {
+          "type": "number"
+        },
+        "decision_delay_quality_loss": {
+          "type": "number"
+        },
+        "decision_quality_min": {
+          "type": "number"
+        },
+        "decision_quality_max": {
+          "type": "number"
+        },
+        "shock_mitigation_sensitivity": {
+          "type": "number"
+        },
+        "shock_delay_amplification": {
+          "type": "number"
+        },
+        "investment_efficiency_sensitivity": {
+          "type": "number"
+        }
+      }
+    },
+    "organizational_scenario": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "system_type",
+        "employee_ownership_fraction",
+        "employee_cash_distribution_rate",
+        "member_capital_allocation_rate",
+        "reinvestment_rate",
+        "organizational_reserve_rate",
+        "external_distribution_rate",
+        "result_hurdle_monthly",
+        "allocation_priority",
+        "distribution_rule",
+        "contribution_measurement_quality",
+        "peer_monitoring_effectiveness",
+        "transparency_index",
+        "employment_stabilization_preference",
+        "external_capital_access_multiplier",
+        "profit_distribution_period_months",
+        "max_distribution_per_employee_period",
+        "governance",
+        "behavior_case_refs"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]*$"
+        },
+        "system_type": {
+          "enum": [
+            "traditional_company",
+            "profit_sharing",
+            "employee_ownership_partial",
+            "worker_cooperative"
+          ]
+        },
+        "employee_ownership_fraction": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "employee_cash_distribution_rate": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "member_capital_allocation_rate": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "reinvestment_rate": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "organizational_reserve_rate": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "external_distribution_rate": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "result_hurdle_monthly": {
+          "type": "number",
+          "minimum": 0
+        },
+        "allocation_priority": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "organizational_reserve",
+              "reinvestment",
+              "employee_cash_distribution",
+              "member_capital_allocation",
+              "external_distribution"
+            ]
+          },
+          "uniqueItems": true
+        },
+        "distribution_rule": {
+          "enum": [
+            "none",
+            "equal_per_capita",
+            "contribution_weighted",
+            "hybrid"
+          ]
+        },
+        "contribution_measurement_quality": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "peer_monitoring_effectiveness": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "transparency_index": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "employment_stabilization_preference": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "external_capital_access_multiplier": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 5
+        },
+        "profit_distribution_period_months": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 12
+        },
+        "max_distribution_per_employee_period": {
+          "anyOf": [
+            {
+              "type": "number",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "governance": {
+          "$ref": "#/$defs/governance"
+        },
+        "behavior_case_refs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1
+        }
+      }
+    }
+  }
+}

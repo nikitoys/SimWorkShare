@@ -1,0 +1,106 @@
+{
+  "schema_version": "0.4",
+  "tests": [
+    {
+      "id": "baseline_static_traditional_sanity",
+      "type": "sanity",
+      "setup": "deterministic; no turnover; no governance; no shock",
+      "expected": "revenue=50*230000=11500000; salary=5000000; variable=2875000; fixed=2000000; operating_profit=1625000"
+    },
+    {
+      "id": "headcount_identity",
+      "type": "invariant",
+      "expected": "headcount_end=headcount_begin-voluntary_leavers-layoffs+hires"
+    },
+    {
+      "id": "no_effect_no_productivity_gain",
+      "type": "unit",
+      "expected": "ownership/profit/governance create no productivity or retention effect under no_effect"
+    },
+    {
+      "id": "profit_sharing_no_ownership",
+      "type": "unit",
+      "expected": "profit_sharing has employee_ownership_fraction=0 and governance_participation_intensity=0"
+    },
+    {
+      "id": "ownership_no_distribution_possible",
+      "type": "unit",
+      "expected": "ownership>0 and distribution=0 creates no cash distribution"
+    },
+    {
+      "id": "governance_admin_cost_reduces_effective_employees",
+      "type": "unit",
+      "expected": "effective employees decrease by governance_hours/standard_hours"
+    },
+    {
+      "id": "cash_safe_distribution",
+      "type": "unit",
+      "expected": "cash budget=0 leads to employee distribution accrued=0"
+    },
+    {
+      "id": "distribution_reserve_at_accrual",
+      "type": "unit",
+      "expected": "restricted_distribution_cash increases immediately at accrual"
+    },
+    {
+      "id": "distribution_payment_releases_restricted_cash",
+      "type": "unit",
+      "expected": "cash_total and restricted_distribution_cash decrease by the same amount at payment"
+    },
+    {
+      "id": "member_capital_redemption_queue",
+      "type": "unit",
+      "expected": "leavers with member capital create redemption payable at configured lag"
+    },
+    {
+      "id": "reinvestment_capacity_lag",
+      "type": "unit",
+      "expected": "capacity increases only after activation lag"
+    },
+    {
+      "id": "external_capital_constraint",
+      "type": "unit",
+      "expected": "lower external_capital_access_multiplier funds less external growth capital"
+    },
+    {
+      "id": "common_random_numbers_market",
+      "type": "integration",
+      "expected": "all scenarios within a run have identical environment path"
+    },
+    {
+      "id": "shock_response_quality",
+      "type": "unit",
+      "expected": "same shock, different decision quality changes effective shock loss by formula"
+    },
+    {
+      "id": "bankruptcy_absorbing",
+      "type": "integration",
+      "expected": "after bankruptcy, active_company_flag=false for future months"
+    },
+    {
+      "id": "allocation_sum_validation",
+      "type": "validation",
+      "expected": "sum allocation rates > 1 is a validation error"
+    },
+    {
+      "id": "strict_unknown_field",
+      "type": "validation",
+      "expected": "unknown field is rejected"
+    },
+    {
+      "id": "duplicate_json_field",
+      "type": "validation",
+      "expected": "duplicate JSON key is rejected by parser"
+    },
+    {
+      "id": "v03_compat_fixed_only",
+      "type": "compatibility",
+      "expected": "compatibility mode reproduces v0.3 fixed_only baseline"
+    },
+    {
+      "id": "v03_compat_profit_share_10_no_effect",
+      "type": "compatibility",
+      "expected": "compatibility mode reproduces v0.3 profit_share_equal_10 no_effect cash-safe accrual"
+    }
+  ]
+}
