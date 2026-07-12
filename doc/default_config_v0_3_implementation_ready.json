@@ -1,0 +1,189 @@
+{
+  "simulation": {
+    "months": 60,
+    "runs": 1000,
+    "random_seed": 42,
+    "common_random_numbers": true,
+    "currency": "RUB"
+  },
+  "company": {
+    "employees_count": 50,
+    "base_salary_per_employee": 100000,
+    "base_revenue_per_employee": 230000,
+    "fixed_costs_monthly": 2000000,
+    "variable_cost_rate": 0.25,
+    "starting_cash": 15000000,
+    "opening_accounts_receivable": 1725000,
+    "required_cash_reserve_months": 2.0,
+    "revenue_productivity_elasticity": 0.5,
+    "demand_cap_multiplier": 1.35
+  },
+  "cashflow": {
+    "revenue_collection_rate_current_month": 0.85,
+    "accounts_receivable_lag_months": 1,
+    "bad_debt_rate": 0.0,
+    "profit_tax_rate": 0.2,
+    "profit_tax_payment_lag_months": 1,
+    "reserve_current_profit_tax": true,
+    "bonus_payroll_tax_rate": 0.0,
+    "debt_service_monthly": 0,
+    "capex_monthly": 0,
+    "planned_reinvestment_rate": 0.1,
+    "available_credit_line": 0,
+    "owner_dividend_policy": {
+      "type": "none"
+    },
+    "reserve_bonus_cash_at_accrual": true
+  },
+  "workforce": {
+    "base_turnover_rate_annual": 0.2,
+    "min_turnover_rate_annual": 0.03,
+    "max_turnover_rate_annual": 0.6,
+    "turnover_random_mode": "deterministic",
+    "recruiting_cost_per_leaver": 50000,
+    "onboarding_cost_per_leaver": 50000,
+    "manager_time_cost_per_leaver": 25000,
+    "lost_productivity_cost_per_leaver": 0,
+    "turnover_productivity_penalty_per_annual_turnover": 0.1,
+    "high_performer_share": 0.2,
+    "min_productivity_uplift": -0.1,
+    "max_productivity_uplift": 0.15
+  },
+  "environment": {
+    "market_growth_monthly": 0.003,
+    "market_volatility_monthly": 0.08,
+    "market_process": "bounded_lognormal",
+    "cost_inflation_monthly": 0.005,
+    "labor_market_factor": 1.0,
+    "shock_probability_monthly": 0.03,
+    "shock_revenue_multiplier": 0.8,
+    "shock_cost_mean": 0,
+    "cash_collection_stress_multiplier": 0.9
+  },
+  "behavior_cases": {
+    "no_effect": {
+      "productivity_uplift_direct": 0.0,
+      "turnover_delta_annual_pp": 0.0,
+      "high_perf_attrition_delta_pp": 0.0,
+      "fairness_penalty_to_quality": 0.0
+    },
+    "retention_only": {
+      "productivity_uplift_direct": 0.0,
+      "turnover_delta_annual_pp": -0.03,
+      "high_perf_attrition_delta_pp": 0.0,
+      "fairness_penalty_to_quality": 0.0
+    },
+    "moderate_effect": {
+      "productivity_uplift_direct": 0.02,
+      "turnover_delta_annual_pp": -0.03,
+      "high_perf_attrition_delta_pp": 0.0,
+      "fairness_penalty_to_quality": 0.0
+    },
+    "optimistic_effect": {
+      "productivity_uplift_direct": 0.05,
+      "turnover_delta_annual_pp": -0.05,
+      "high_perf_attrition_delta_pp": -0.01,
+      "fairness_penalty_to_quality": 0.0
+    },
+    "negative_fairness_effect": {
+      "productivity_uplift_direct": -0.01,
+      "turnover_delta_annual_pp": 0.02,
+      "high_perf_attrition_delta_pp": 0.05,
+      "fairness_penalty_to_quality": -0.01
+    }
+  },
+  "fixed_raise_budget": {
+    "mode": "prepass_reference",
+    "reference_compensation_scenario": "profit_share_equal_10",
+    "reference_behavior_case": "no_effect",
+    "reference_environment_case": "normal_market",
+    "statistic": "mean_total_employer_bonus_cost_per_employee_per_month"
+  },
+  "compensation_scenarios": [
+    {
+      "name": "fixed_only",
+      "type": "fixed_only"
+    },
+    {
+      "name": "fixed_raise_same_expected_cost_for_10",
+      "type": "fixed_raise_same_expected_cost",
+      "reference": "profit_share_equal_10"
+    },
+    {
+      "name": "profit_share_equal_5",
+      "type": "profit_share",
+      "profit_share_percent": 0.05,
+      "profit_hurdle_monthly": 0,
+      "bonus_period": "monthly",
+      "bonus_payout_lag_months": 1,
+      "equal_distribution": true
+    },
+    {
+      "name": "profit_share_equal_10",
+      "type": "profit_share",
+      "profit_share_percent": 0.1,
+      "profit_hurdle_monthly": 0,
+      "bonus_period": "monthly",
+      "bonus_payout_lag_months": 1,
+      "equal_distribution": true
+    },
+    {
+      "name": "profit_share_equal_15",
+      "type": "profit_share",
+      "profit_share_percent": 0.15,
+      "profit_hurdle_monthly": 0,
+      "bonus_period": "monthly",
+      "bonus_payout_lag_months": 1,
+      "equal_distribution": true
+    },
+    {
+      "name": "profit_share_above_hurdle_10",
+      "type": "profit_share",
+      "profit_share_percent": 0.1,
+      "profit_hurdle_monthly": 1000000,
+      "bonus_period": "monthly",
+      "bonus_payout_lag_months": 1,
+      "equal_distribution": true
+    },
+    {
+      "name": "profit_share_above_hurdle_20",
+      "type": "profit_share",
+      "profit_share_percent": 0.2,
+      "profit_hurdle_monthly": 1000000,
+      "bonus_period": "monthly",
+      "bonus_payout_lag_months": 1,
+      "equal_distribution": true
+    },
+    {
+      "name": "profit_share_equal_10_quarterly",
+      "type": "profit_share",
+      "profit_share_percent": 0.1,
+      "profit_hurdle_monthly": 0,
+      "bonus_period": "quarterly",
+      "bonus_payout_lag_months": 1,
+      "equal_distribution": true
+    },
+    {
+      "name": "profit_share_equal_10_annual",
+      "type": "profit_share",
+      "profit_share_percent": 0.1,
+      "profit_hurdle_monthly": 0,
+      "bonus_period": "annual",
+      "bonus_payout_lag_months": 1,
+      "equal_distribution": true
+    }
+  ],
+  "environment_cases": [
+    "normal_market",
+    "flat_market",
+    "downturn",
+    "shock",
+    "labor_tight"
+  ],
+  "reporting": {
+    "volatility_penalty_lambda": 0.25,
+    "small_threshold_for_roi": 1e-09,
+    "print_model_limitations": true,
+    "print_assumption_flags": true
+  }
+}

@@ -1,6 +1,7 @@
 package sim
 
 import (
+	"bytes"
 	"encoding/json"
 	"math"
 	"os"
@@ -94,7 +95,15 @@ func TestDeterministicBaselineMatchesGoldenJSON(t *testing.T) {
 	if err != nil {
 		t.Fatalf("os.ReadFile(golden) error = %v", err)
 	}
-	if string(got)+"\n" != string(want) {
+	var compactWant bytes.Buffer
+	if err := json.Compact(&compactWant, want); err != nil {
+		t.Fatalf("json.Compact(golden) error = %v", err)
+	}
+	var compactGot bytes.Buffer
+	if err := json.Compact(&compactGot, got); err != nil {
+		t.Fatalf("json.Compact(result) error = %v", err)
+	}
+	if !bytes.Equal(compactGot.Bytes(), compactWant.Bytes()) {
 		t.Fatalf("month 1 JSON changed\n--- got ---\n%s\n--- want ---\n%s", got, want)
 	}
 }

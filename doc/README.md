@@ -23,3 +23,7 @@ Primary implementation entry points:
 3. Add invariant checks from section 18.
 4. Run the tests from `required_tests_v0_4.json`.
 5. Use `compatibility_v0_3` only to reproduce legacy v0.3 behavior.
+
+Integrity note: `MANIFEST.sha256` intentionally does not list itself. A file
+cannot contain a stable SHA-256 digest of its own complete contents; all other
+delivery-package entries remain covered by the manifest.

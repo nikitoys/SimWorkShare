@@ -1,113 +1,185 @@
-# SimWorkShare
+# SimWorkShare v0.4
 
-Детерминированная реализация сравнения фиксированной оплаты и ежемесячного
-profit sharing из спецификации v0.3.
+SimWorkShare — месячная имитационная модель для сравнения четырёх
+организационных сценариев:
 
-Текущий срез последовательно выполняет `simulation.months` месяцев для:
+- `traditional_company`;
+- `profit_sharing`;
+- `employee_ownership_partial`;
+- `worker_cooperative`.
 
-- `fixed_only + no_effect`;
-- monthly `profit_share` с явно выбранным behavior case;
-- `normal_market` с нейтральными детерминированными факторами.
+Модель разделяет ownership, employee cash distribution, member capital,
+governance, reinvestment и external capital. Она считает динамический
+headcount, ramp-up cohorts, производственные ограничения, P&L, cash и debt,
+денежные очереди, capacity, риски и метрики развития. Это сценарный инструмент,
+а не доказательство преимуществ какой-либо формы организации и не оценка доли
+основателя.
 
-Между месяцами переносятся cash, accounts receivable и tax payable. AR и налог
-исполняются через отдельные очереди со сроками из конфигурации. Profit-share
-bonus accrual, payroll tax, restricted bonus cash и bonus payable queue
-реализованы для monthly period и payout lag `>= 1`. Monte Carlo, quarterly и
-annual bonus, fixed-raise prepass, sensitivity analysis, classification и
-полный набор отчётов намеренно ещё не реализованы.
+## Что реализовано
 
-## Запуск
+- строгая загрузка полного JSON v0.4: неизвестные и дублирующиеся поля,
+  пропуски, `NaN`/`Infinity`, enum, диапазоны и межполевые правила отклоняются с
+  полным путём к полю;
+- deterministic и Monte Carlo, stable seed, независимые random streams и common
+  random numbers;
+- точный месячный pipeline разделов 7–8, пять due queues и инварианты раздела
+  18;
+- четыре организационных сценария со всеми разрешёнными behavior cases,
+  включая `no_effect` и отрицательные controls;
+- monthly results, per-run и aggregate terminal summaries, P10/median/P90,
+  paired deltas к `traditional_company` и `profit_sharing`, risk/workforce/
+  employee/development metrics;
+- sensitivity grid и break-even productivity uplift с risk gates;
+- JSON, monthly CSV, summary CSV, paired CSV, sensitivity CSV и break-even CSV;
+- отдельный compatibility path для реально работавшего v0.3 без изменения
+  старых golden fixtures.
 
-Из корня репозитория:
+Канонический `doc/default_config_v0_4.json` — Monte Carlo на 1000 runs,
+240 месяцев с горизонтами 60/120/240 и шаблонными, не откалиброванными данными.
+Для быстрой проверки используйте меньшее `-runs`; для итогового анализа уберите
+override.
+
+## Требования
+
+Модуль объявляет Go 1.26. Если `go` отсутствует в `PATH`, на Windows можно
+заменить его в командах на `C:\Program Files\Go\bin\go.exe`.
+
+## Запуск v0.4
+
+Подготовьте каталог для файлов результатов:
+
+```powershell
+New-Item -ItemType Directory -Force ./out
+```
+
+Детерминированный сценарий с полными месячными и terminal outputs:
+
+```powershell
+go run ./cmd/profitshare-sim `
+  -config ./doc/default_config_v0_4.json `
+  -mode deterministic `
+  -scenario worker_cooperative `
+  -behavior no_effect `
+  -monthly-csv ./out/monthly.csv `
+  -summary-csv ./out/summary.csv `
+  -output ./out/result.json
+```
+
+Monte Carlo с тем же seed воспроизводится побитово в рамках реализации stable
+RNG. Команда ниже — короткий аналитический запуск на 100 runs:
+
+```powershell
+go run ./cmd/profitshare-sim `
+  -config ./doc/default_config_v0_4.json `
+  -scenario worker_cooperative `
+  -behavior moderate_positive `
+  -runs 100 `
+  -seed 20260712 `
+  -summary-csv ./out/monte_carlo_summary.csv `
+  -output ./out/monte_carlo.json
+```
+
+Paired comparison автоматически добавляет оба reference-сценария из config,
+даже если выбран один candidate:
+
+```powershell
+go run ./cmd/profitshare-sim `
+  -config ./doc/default_config_v0_4.json `
+  -scenario worker_cooperative `
+  -behavior moderate_positive `
+  -runs 100 `
+  -paired-csv ./out/paired.csv `
+  -output ./out/comparison.json
+```
+
+Sensitivity grid:
+
+```powershell
+go run ./cmd/profitshare-sim `
+  -config ./doc/default_config_v0_4.json `
+  -scenario worker_cooperative `
+  -behavior moderate_positive `
+  -runs 20 `
+  -sensitivity `
+  -sensitivity-csv ./out/sensitivity.csv `
+  -output ./out/sensitivity.json
+```
+
+Break-even относительно traditional company:
+
+```powershell
+go run ./cmd/profitshare-sim `
+  -config ./doc/default_config_v0_4.json `
+  -scenario worker_cooperative `
+  -behavior moderate_positive `
+  -reference traditional_company `
+  -horizon 120 `
+  -runs 20 `
+  -break-even `
+  -break-even-csv ./out/break_even.csv `
+  -output ./out/break_even.json
+```
+
+Без `-output` JSON печатается в stdout. Предупреждения и ошибки идут только в
+stderr. Monte Carlo monthly rows включаются в JSON флагом
+`-include-monthly-json`, per-run summaries — `-include-run-summaries`. CSV-файл
+создаётся только при переданном пути; `reporting.write_*` в config должен
+разрешать соответствующий формат.
+
+`shock_survival_rate` рассчитывается только для шоков с полным 12-месячным
+окном наблюдения. Если таких прогонов нет, JSON содержит `null`, а соответствующая
+ячейка summary CSV остаётся пустой.
+
+## Совместимость v0.3
+
+Старые команды сохранены:
 
 ```powershell
 go run ./cmd/profitshare-sim -config ./doc/default_config_v0_3_implementation_ready.json
-```
-
-Команда печатает в stdout стабильный JSON с массивом `monthly_results` и
-`terminal_summary`. Для canonical config массив содержит 60 месяцев. Повторный
-запуск с тем же config даёт побайтово тот же результат; `simulation.runs`, seed
-и common random numbers на этом детерминированном этапе не используются.
-
-Выбрать monthly profit sharing:
-
-```powershell
 go run ./cmd/profitshare-sim -config ./doc/default_config_v0_3_implementation_ready.json -scenario profit_share_equal_10 -behavior no_effect
-```
-
-Сразу сравнить фиксированную схему и 10% profit sharing на общей экономике:
-
-```powershell
 go run ./cmd/profitshare-compare -config ./doc/default_config_v0_3_implementation_ready.json -profit-scenario profit_share_equal_10 -profit-behavior no_effect
 ```
 
-Для проверки поведенческой гипотезы `-profit-behavior` можно явно заменить на
-`moderate_effect` или `optimistic_effect`. Это сценарные допущения, а не эффект,
-который модель выводит автоматически.
-
-## Два профиля сравнения
-
-Готовы два тонких профиля, которые используют один и тот же base config и
-различаются только схемой оплаты:
-
-```powershell
-go run ./cmd/profitshare-sim -profile ./profiles/fixed_only.json
-go run ./cmd/profitshare-sim -profile ./profiles/profit_share_10.json
-```
-
-Оба профиля помечены `template_defaults_not_real_data`: canonical числа пока
-не являются фактическими показателями компании. После ввода и ручной проверки
-реальных P&L/cash/workforce параметров в общем `base_config` статус профилей
-можно сменить на `calibrated`; сам флаг не подтверждает качество калибровки.
+Compatibility охватывает только действительно исполнявшиеся v0.3
+`fixed_only` и monthly profit-sharing scenarios. Fixed raise, quarterly и
+annual definitions старый код не реализовывал; их выбор возвращает явную
+unsupported-feature error.
 
 ## Проверка
 
 ```powershell
+Get-ChildItem ./cmd,./internal -Recurse -Filter *.go | ForEach-Object { gofmt -w $_.FullName }
 go test ./...
 go vet ./...
+go test -race ./...
 ```
 
-`baseline_fixed_only_sanity` из раздела 18 проверяется отдельным fixture, в
-котором прямые turnover costs равны нулю. Полный default config сохраняет
-базовую текучесть и поэтому включает её стоимость в operating profit. Причина
-этого разделения записана в [DECISIONS.md](./DECISIONS.md).
-
-Дополнительно тесты проверяют точное сохранение результата первого месяца,
-непрерывность opening/closing cash, балансы AR и tax payable, однократную оплату
-обязательств в due month, отсутствие bonus state и повторяемость 60-месячного
-запуска, а также bonus accrual/payment ledgers, payroll tax, cash affordability,
-caps, hurdle и парный cash bridge между схемами.
-
-## Порядок месяца и очереди
-
-В каждом месяце сначала рассчитываются environment, workforce и operating P&L,
-затем собирается наступившая AR и оплачиваются наступившие обязательства,
-включая старый bonus due. Затем новый бонус начисляется в P&L, его employer cost
-резервируется без уменьшения total cash, и только после этого начисляется налог
-на прибыль. Налог и бонус уменьшают cash только в due month.
-
-Opening AR считается уже очищенной от bad debt и собирается в месяце 1. Новая
-AR после bad-debt haircut и текущий tax accrual получают срок
-`origin_month + configured_lag`. Хвосты очередей за пределами горизонта не
-форсируются к оплате и остаются в terminal summary.
-
-## Денежные величины
-
-Деньги хранятся как `float64` в номинальных единицах
-`simulation.currency`. Промежуточное округление не выполняется. Бухгалтерские
-равенства используют централизованный absolute/relative tolerance. Пороговые
-risk-сравнения используют только абсолютный допуск `1e-6`, чтобы tolerance не
-рос вместе с балансом. Форматирование и округление относятся только к будущему
-слою представления.
+Race detector требует рабочий CGO toolchain. Если он недоступен, обычные tests
+и vet по-прежнему выполняются, а ограничение race-прогона следует фиксировать
+отдельно.
 
 ## Структура
 
-- `internal/config` — строгая загрузка, нормализация и валидация JSON;
-- `internal/domain` — типы состояния и результата;
-- `internal/model` — чистые расчёты workforce, P&L и cash;
-- `internal/sim` — многомесячная оркестрация, due queues и paired comparison;
-- `internal/runprofile` — строгая загрузка тонких профилей запуска;
-- `cmd/profitshare-sim` — минимальный CLI;
-- `cmd/profitshare-compare` — сравнение fixed_only и profit_share одним запуском.
+- `internal/v04/config` — отдельные v0.4 types, strict parser, validation,
+  warnings и sensitivity mutation;
+- `internal/v04/domain` — monthly state, summaries и output contracts;
+- `internal/v04/sim` — environment, workforce, behavior, governance,
+  production, economics, allocation, financing, queues, member capital,
+  metrics, sensitivity, break-even и invariants;
+- `internal/compatv03` и прежние `internal/*` — воспроизводимость v0.3;
+- `cmd/profitshare-sim` — v0.4 runner и v0.3 compatibility wrapper;
+- `cmd/profitshare-compare` — сохранённое v0.3 comparison CLI;
+- `doc/` — спецификация, canonical configs, schema, test manifest и migration
+  artifacts.
 
-Исходная спецификация и canonical default config остаются в каталоге `doc/`.
+Все неоднозначности формул и границы совместимости зафиксированы в
+[DECISIONS.md](./DECISIONS.md).
+
+## Ограничения
+
+Tax, external capital, governance и member capital являются упрощёнными
+механизмами, а workforce агрегирован. High-performer inputs выводятся как
+assumption indicator, но не входят в aggregate turnover: раздел 8 не задаёт
+для них формулу. `sustainable_development_value_proxy` не является equity или
+founder value. Любой вывод следует проверять на sensitivity и калиброванных
+данных.
