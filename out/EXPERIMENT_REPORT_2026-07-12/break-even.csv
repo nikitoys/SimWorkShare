@@ -1,0 +1,2 @@
+scenario,behavior_case,reference_scenario,horizon_months,metric,productivity_uplift,flags
+worker_cooperative,moderate_positive,traditional_company,120,sustainable_development_value_proxy,-0.05,
